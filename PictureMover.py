@@ -1,8 +1,8 @@
-import glob
 import os
 import os.path
 import time
 from datetime import datetime
+from glob import glob
 
 class PictureMover:
 
@@ -19,12 +19,17 @@ class PictureMover:
 
 	def get_files_to_move(self):
 		files_to_move = []
+		workdirectory_and_subdirectories = self.get_workdirectory_and_subdirectories()
 
-		for extension in self.extensions:
-			extension_wildcard_path = self.workdirectory + '/*.' + extension
-			files_to_move.extend(glob.glob(extension_wildcard_path))
+		for current_directory in workdirectory_and_subdirectories:
+			for extension in self.extensions:
+				extension_wildcard_path = current_directory + '/*.' + extension
+				files_to_move.extend(glob(extension_wildcard_path))
 
 		return files_to_move
+
+	def get_workdirectory_and_subdirectories(self):
+		return [x[0] for x in os.walk(self.workdirectory)]
 
 	def get_subdirectoryname(self, filename):
 		return os.path.join(self.destinationdirectory + self.get_year_and_month(filename))
